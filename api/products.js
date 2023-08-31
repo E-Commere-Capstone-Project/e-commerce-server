@@ -1,0 +1,17 @@
+const express = require("express");
+const router = express.Router();
+
+const { getAllProducts } = require("../db/products");
+
+// GET = /api/products - get all products
+router.get("/", async (req, res, next) => {
+  try {
+    const products = await getAllProducts();
+
+    res.send(products);
+  } catch (error) {
+    next(error);
+  }
+});
+
+module.exports = router;

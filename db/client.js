@@ -12,16 +12,3 @@ const client = new Client({
 });
 
 module.exports = client;
-
-const checkUsers = async function () {
-  try {
-    const { rows: user } = await client.query(`SELECT * FROM user;`);
-    return user;
-  } catch (error) {
-    throw error;
-  }
-};
-
-const users = checkUsers();
-
-console.log(users);

@@ -39,7 +39,7 @@ async function createTables() {
             inventory_id INTEGER,
             price NUMERIC NOT NULL,
             discount_id INTEGER,
-            product_image BYTEA NOT NULL
+            product_image TEXT NOT NULL
             );
         
         `);
