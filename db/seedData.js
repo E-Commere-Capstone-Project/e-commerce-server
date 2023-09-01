@@ -21,22 +21,23 @@ async function createTables() {
     console.log("Building All Tables...");
     await client.query(`
       CREATE TABLE users (
-        id INTEGER PRIMARY KEY,
+        id UUID DEFAULT gen_random_uuid() PRIMARY KEY REFERENCES user_address(user_id),
         username VARCHAR(255) UNIQUE NOT NULL,
         password TEXT NOT NULL,
         first_name VARCHAR(255) NOT NULL,
         last_name VARCHAR(255) NOT NULL,
-        telephone CHARACTER(10)
+        telephone CHARACTER(10),
+        role_name VARCHAR(255) DEFAULT 'shopper' NOT NULL
         );CREATE TABLE product_category (
           id INTEGER PRIMARY KEY,
           name VARCHAR(255) UNIQUE NOT NULL
         );
         CREATE TABLE product (
-            id INTEGER PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             name VARCHAR(255) UNIQUE NOT NULL,
             description TEXT NOT NULL,
             category_id INTEGER REFERENCES product_category(id),
-            inventory_id INTEGER,
+            inventory_id SERIAL,
             price NUMERIC NOT NULL,
             discount_id INTEGER,
             product_image TEXT NOT NULL
@@ -88,20 +89,19 @@ async function createInitialData() {
     // VALUES
     //   ('mychaelm', 'Marigold14', 'Mychael', 'Magnuson', 1112221212)
     //   ('johnsmith12', 'GoCowboys22', 'John', 'Smith', 2223331313)`);
-
     await client.query(`INSERT INTO product_category (id, name)
     VALUES (
       1, 'lips'
     ), (2, 'face')`);
     await client.query(`
-      INSERT INTO product (id, name, description, category_id, inventory_id, price, discount_id, product_image)
+      INSERT INTO product (name, description, category_id, price, discount_id, product_image)
       VALUES
-          (1, 'Slip Shine Sheer Shiny Lipstick', 'The FENTY BEAUTY by Rihanna Slip Shine Sheer Shiny Lipstick 
+          ('Slip Shine Sheer Shiny Lipstick', 'The FENTY BEAUTY by Rihanna Slip Shine Sheer Shiny Lipstick 
           is an ultra comfortable sheer lipstick with the perfect amount of nourishing color and shine, available
-           in a range of easy-to-wear shades for all.', 1, 1, 26, null, 'https://media.ulta.com/i/ulta/2592337?w=720&fmt=webp'),
-          (2, 'Blue Blood Artistry Palette', 'The Blue Blood Palette contains 18 eyeshadow/pressed pigment shades of stunning blues,
+           in a range of easy-to-wear shades for all.', 1, 26, null, 'https://media.ulta.com/i/ulta/2592337?w=720&fmt=webp'),
+          ('Blue Blood Artistry Palette', 'The Blue Blood Palette contains 18 eyeshadow/pressed pigment shades of stunning blues,
            mints, and peaches. This palette is inspired by high-end jewelry boxes & caskets. Enclosed in a metal clasp, this trunk is
-            one of a kind.', 2, 2, 52, null, 'https://cdn.shopify.com/s/files/1/0673/2291/products/05BlueBlood-Open_Lid-Web.jpg?v=1629846255')`);
+            one of a kind.', 2, 52, null, 'https://cdn.shopify.com/s/files/1/0673/2291/products/05BlueBlood-Open_Lid-Web.jpg?v=1629846255')`);
   } catch (error) {
     throw error;
   }
