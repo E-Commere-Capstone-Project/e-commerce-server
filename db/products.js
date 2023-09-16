@@ -1,6 +1,5 @@
-const router = require("../api/products");
 const client = require("./client");
-const util = require("./util");
+// const util = require("./util");
 
 //GET = /api/products
 async function getAllProducts() {
@@ -25,19 +24,19 @@ async function getProductById(id) {
 }
 
 // CREATE/POST = /api/products - add a new product
-async function createProduct({
-  name,
-  description,
-  category_id,
-  price,
-  product_image,
-}) {
+async function createProduct(body) {
   try {
     const {
       rows: [product],
     } = await client.query(
-      `INSERT INTO product ('name', 'description', 'category_id', 'price', 'product_image') VALUES($1, $2, $3, $4, $5) RETURNING *;`,
-      [name, description, category_id, price, product_image]
+      `INSERT INTO product ("name", "description", "category_id", "price", "product_image") VALUES($1, $2, $3, $4, $5) RETURNING *;`,
+      [
+        body.name,
+        body.description,
+        body.category_id,
+        body.price,
+        body.product_image,
+      ]
     );
 
     return product;

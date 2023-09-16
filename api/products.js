@@ -12,6 +12,7 @@ const { requireUser, requiredNotSent } = require("./utils");
 router.get("/", async (req, res, next) => {
   try {
     const products = await getAllProducts();
+    console.log(req);
 
     res.send(products);
   } catch (error) {
@@ -45,15 +46,9 @@ router.post(
   }),
   async (req, res, next) => {
     try {
-      const { name, description, category_id, price, product_image } = req.body;
-      const createdProduct = await createProduct(
-        name,
-        description,
-        category_id,
-        price,
-        product_image
-      );
+      const createdProduct = await createProduct(req.body);
       if (createdProduct) {
+        console.log(req);
         res.send(createdProduct);
       } else {
         next({
