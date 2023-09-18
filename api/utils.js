@@ -1,3 +1,6 @@
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
 function requireUser(req, res, next) {
   if (!req.user) {
     res.status(401);
@@ -8,6 +11,18 @@ function requireUser(req, res, next) {
   }
 
   next();
+}
+
+function verifyToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
 }
 
 // takes required parameters as an array, returns a middleware function that sends back a message if they're not present
@@ -54,4 +69,5 @@ const requiredNotSent = ({ requiredParams, atLeastOne = false }) => {
 module.exports = {
   requireUser,
   requiredNotSent,
+  verifyToken,
 };
