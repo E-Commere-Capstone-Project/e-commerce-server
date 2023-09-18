@@ -1,5 +1,5 @@
 const client = require("./client");
-// const util = require("./util");
+const util = require("./util");
 
 //GET = /api/products
 async function getAllProducts() {
@@ -29,13 +29,14 @@ async function createProduct(body) {
     const {
       rows: [product],
     } = await client.query(
-      `INSERT INTO product ("name", "description", "category_id", "price", "product_image") VALUES($1, $2, $3, $4, $5) RETURNING *;`,
+      `INSERT INTO product ("name", "description", "category_id", "price", "product_image", 'quantity') VALUES($1, $2, $3, $4, $5) RETURNING *;`,
       [
         body.name,
         body.description,
         body.category_id,
         body.price,
         body.product_image,
+        body.quantity,
       ]
     );
 
@@ -45,11 +46,45 @@ async function createProduct(body) {
   }
 }
 // UPDATE/PATCH = /api/products/:id update/patch an existing product
-
+async function updateProduct({ id, ...fields }) {
+  try {
+    const toUpdate = {};
+    for (let column in fields) {
+      if (fields[column] !== undefined) toUpdate[column] = fields[column];
+    }
+    let product;
+    if (util.dbFields(toUpdate).insert.length > 0) {
+      const { rows } = await client.query(
+        `UPDATE product SET ${
+          util.dbFields(toUpdate).insert
+        } WHERE id=${id} RETURNING *;`,
+        Object.values(toUpdate)
+      );
+      product = rows[0];
+    }
+    return product;
+  } catch (error) {
+    throw error;
+  }
+}
 // DELETE = /api/products/:id delete a product
-
+async function deleteProduct(id) {
+  try {
+    await client.query(`DELETE FROM product_inventory WHERE 'id' = $1;`, [id]);
+    const {
+      rows: [product],
+    } = await client.query(`DELETE FROM product WHERE id = $1 RETURNING *;`, [
+      id,
+    ]);
+    return product;
+  } catch (error) {
+    throw error;
+  }
+}
 module.exports = {
   getAllProducts,
   getProductById,
   createProduct,
+  updateProduct,
+  deleteProduct,
 };
