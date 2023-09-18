@@ -5,6 +5,8 @@ const {
   getAllProducts,
   getProductById,
   createProduct,
+  updateProduct,
+  deleteProduct,
 } = require("../db/products");
 const { requireUser, requiredNotSent } = require("./utils");
 
@@ -61,5 +63,62 @@ router.post(
     }
   }
 );
+
+// UPDATE /api/products/:id
+router.patch(
+  "/:id",
+  requiredNotSent({ requiredParams: ["name", "price"], atLeastOne: true }),
+  async (req, res, next) => {
+    try {
+      const { name, description, category_id, price, product_image } = req.body;
+      const { id } = req.params;
+      const productToUpdate = await getProductById(id);
+      if (!productToUpdate) {
+        next({
+          name: "Product no found",
+          message: "No product by ID ${id}",
+        });
+      } else {
+        const updatedProduct = await updateProduct({
+          id,
+          name,
+          description,
+          category_id,
+          price,
+          product_image,
+        });
+        if (updatedProduct) {
+          res.send(updatedProduct);
+        } else {
+          next({
+            name: "FailedToUpdate",
+            message: "There was an error updating your routine",
+          });
+        }
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// DELETE product /products/:id
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const productToDelete = await getProductById(id);
+    if (!productToDelete) {
+      next({
+        name: "NotFound",
+        message: `No product by ID ${id}`,
+      });
+    } else {
+      const deletedProduct = await deleteProduct(id);
+      res.send({ success: true, ...deletedProduct });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;
