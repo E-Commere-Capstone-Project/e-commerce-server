@@ -1,9 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const { createUser, getUserByUsername, getUser } = require("../db");
-// const { requireUser } = require("./utils");
-const { JWT_SECRET = "neverTell" } = process.env;
+const {
+  createUser,
+  getUserByUsername,
+  getUser,
+  getUserById,
+} = require("../db");
+const { verifyToken } = require("./utils");
+require("dotenv").config();
 
 // POST /api/users/register
 router.post("/register", async (req, res, next) => {
@@ -36,12 +41,10 @@ router.post("/register", async (req, res, next) => {
           message: "There was a problem registering you. Please try again.",
         });
       } else {
-        const token = jwt.sign(
-          { id: user.id, username: user.username },
-          JWT_SECRET,
-          { expiresIn: "1w" }
-        );
-        res.send({ user, message: "you're signed up!", token });
+        res.send({
+          user,
+          status: { success: true, message: "Thank you for signing up." },
+        });
       }
     }
   } catch (error) {
@@ -70,13 +73,13 @@ router.post("/login", async (req, res, next) => {
     } else {
       const token = jwt.sign(
         { id: user.id, username: user.username },
-        JWT_SECRET,
+        process.env.JWT_SECRET,
         { expiresIn: "1w" }
       );
       res.send({
         user,
-        message: "you're logged in!",
-        token,
+        status: { success: true, message: "You have successfully logged in." },
+        userToken: token,
         user_role: user.role_name,
       });
     }
@@ -84,4 +87,40 @@ router.post("/login", async (req, res, next) => {
     next(error);
   }
 });
+
+//GET user by id
+router.get("/account", verifyToken, async (req, res, next) => {
+  const { id } = req.user;
+
+  try {
+    const userAccount = await getUserById(id);
+    res.send({
+      userAccount,
+      status: {
+        success: true,
+        message: "Account is authenticated.",
+      },
+      user: req.user,
+    });
+  } catch (error) {
+    next(error);
+  }
+
+  // jwt.verify(req.token, "secretkey", async (err, authData) => {
+  //   if (err) {
+  //     res.sendStatus(403);
+  //   } else {
+  //     const userAccount = await getUserById(userId);
+  //     res.send({
+  //       userAccount,
+  //       status: {
+  //         success: true,
+  //         message: "Account is authenticated.",
+  //       },
+  //       userData: authData,
+  //     });
+  //   }
+  // });
+});
+
 module.exports = router;
