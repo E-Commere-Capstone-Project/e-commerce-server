@@ -3,11 +3,16 @@ const client = require("./client");
 // GET all items in the cart
 async function getCart(userId) {
   try {
+    // const { rows: order_items } = await client.query(
+    //   `SELECT * FROM order_items WHERE user_id = $1`,
+    //   [userId]
+    // );
     const { rows: order_items } = await client.query(
-      `SELECT * FROM order_items WHERE user_id = $1`,
+      `SELECT name, price, discount_id, product_image, oi.quantity AS order_quantity FROM order_items oi INNER JOIN product p ON oi.product_id = p.id WHERE oi.user_id = $1`,
       [userId]
     );
-    console.log(`Checking cart: `, await checkInCart(userId, 1));
+
+    // console.log(`Checking cart: `, await checkInCart(userId, 1));
 
     return order_items;
   } catch (error) {
