@@ -11,7 +11,10 @@ router.get("/", verifyToken, async (req, res, next) => {
     const { id } = req.user;
     const cart = await getCart(id);
     // console.log(req.body);
-    const cartItems = cart.map((product) => getProductById(product.product_id));
+    const cartItems = cart.map(async (product) => {
+      const item = await getProductById(product.product_id);
+      return item;
+    });
 
     res.send({
       status: {
@@ -19,7 +22,7 @@ router.get("/", verifyToken, async (req, res, next) => {
         message: "Cart has been successfully received.",
       },
       cart,
-      cart_Items: cartItems,
+      products: cartItems,
       user: req.user,
     });
   } catch (error) {
