@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { getCart, addToCart, removeFromCart, emptyCart } = require("../db/cart");
+const { getProductById } = require("../db/products");
 const { verifyToken } = require("./utils");
 
 // GET = /api/cart - get all products in the cart
@@ -10,6 +11,7 @@ router.get("/", verifyToken, async (req, res, next) => {
     const { id } = req.user;
     const cart = await getCart(id);
     // console.log(req.body);
+    const cartItems = cart.map((product) => getProductById(product.product_id));
 
     res.send({
       status: {
@@ -17,6 +19,7 @@ router.get("/", verifyToken, async (req, res, next) => {
         message: "Cart has been successfully received.",
       },
       cart,
+      cart_Items: cartItems,
       user: req.user,
     });
   } catch (error) {
