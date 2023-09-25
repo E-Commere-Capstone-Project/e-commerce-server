@@ -89,7 +89,8 @@ async function createTables() {
     // ORDER_ITEMS TABLE
     await client.query(`CREATE TABLE order_items(
           id SERIAL PRIMARY KEY,
-          product_id SERIAL REFERENCES product(id) UNIQUE, user_id UUID REFERENCES users(id),
+          product_id SERIAL REFERENCES product(id) UNIQUE, 
+          user_id UUID REFERENCES users(id),
           quantity INTEGER NOT NULL);`);
   } catch (error) {
     throw error;
