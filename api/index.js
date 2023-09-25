@@ -10,4 +10,7 @@ router.use("/products", require("./products"));
 // ROUTER: /api/cart
 router.use("/cart", require("./cart"));
 
+// ROUTER: /api/admin
+router.use("/users/admin", require("./admin_user"));
+
 module.exports = router;
