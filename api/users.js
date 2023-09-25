@@ -6,7 +6,7 @@ const {
   getUserByUsername,
   getUser,
   getUserById,
-} = require("../db");
+} = require("../db/users");
 const { verifyToken } = require("./utils");
 require("dotenv").config();
 
