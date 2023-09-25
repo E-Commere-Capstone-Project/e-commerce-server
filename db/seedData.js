@@ -58,7 +58,6 @@ async function createTables() {
             name VARCHAR(255) UNIQUE NOT NULL,
             description TEXT NOT NULL,
             category_id SERIAL REFERENCES product_category(id),
-            inventory_id SERIAL UNIQUE,
             price NUMERIC NOT NULL,
             discount_id SERIAL REFERENCES discount(id),
             product_image TEXT NOT NULL,
@@ -81,7 +80,7 @@ async function createTables() {
           permissions VARCHAR(255) NOT NULL);`);
     // ADMIN_USER TABLE
     await client.query(`CREATE TABLE admin_user(
-          id SERIAL PRIMARY KEY,
+          id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
           username VARCHAR(255) UNIQUE NOT NULL,
           password TEXT NOT NULL,
           first_name VARCHAR(255) NOT NULL,
