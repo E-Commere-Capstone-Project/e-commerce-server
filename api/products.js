@@ -8,7 +8,9 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../db/products");
-const { requireUser, requiredNotSent } = require("./utils");
+
+const { getAdminUserByUsername } = require("../db/admin_user");
+const { requiredNotSent, verifyToken } = require("./utils");
 
 // GET = /api/products - get all products
 router.get("/", async (req, res, next) => {
@@ -36,18 +38,22 @@ router.get("/:id", async (req, res, next) => {
 // CREATE/POST = /api/products - add a new product
 router.post(
   "/",
-  requireUser,
   requiredNotSent({
     requiredParams: [
       "name",
       "description",
       "category_id",
       "price",
+      "discount_id",
       "product_image",
+      "quantity",
     ],
   }),
+  verifyToken,
   async (req, res, next) => {
     try {
+      const admin = await getAdminUserByUsername(req.user.username);
+      if (!admin) return;
       const createdProduct = await createProduct(req.body);
       if (createdProduct) {
         console.log(req);
@@ -68,9 +74,20 @@ router.post(
 router.patch(
   "/:id",
   requiredNotSent({ requiredParams: ["name", "price"], atLeastOne: true }),
+  verifyToken,
   async (req, res, next) => {
     try {
-      const { name, description, category_id, price, product_image } = req.body;
+      const admin = await getAdminUserByUsername(req.user.username);
+      if (!admin) return;
+      const {
+        name,
+        description,
+        category_id,
+        price,
+        discount_id,
+        product_image,
+        quantity,
+      } = req.body;
       const { id } = req.params;
       const productToUpdate = await getProductById(id);
       if (!productToUpdate) {
@@ -85,7 +102,9 @@ router.patch(
           description,
           category_id,
           price,
+          discount_id,
           product_image,
+          quantity,
         });
         if (updatedProduct) {
           res.send(updatedProduct);
@@ -103,8 +122,10 @@ router.patch(
 );
 
 // DELETE product /products/:id
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", verifyToken, async (req, res, next) => {
   try {
+    const admin = await getAdminUserByUsername(req.user.username);
+    if (!admin) return;
     const { id } = req.params;
     const productToDelete = await getProductById(id);
     if (!productToDelete) {
