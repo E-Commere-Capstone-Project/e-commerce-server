@@ -140,7 +140,7 @@ async function createInitialData() {
     await client.query(`INSERT INTO product_category (id, name)
     VALUES (
       1, 'lips'
-    ), (2, 'face')`);
+    ), (2, 'face'), (3, 'eyes'), (4, 'accessories'), (5, 'highlighters')`);
     await client.query(
       `INSERT INTO discount (name, description, discount_percent, isActive) VALUES ('REDFORDEAD', 'All red lipsticks are 30 percent off', .30, TRUE), ('PALETTELUV','All Palettes are 20 percent off', .20, TRUE)`
     );
