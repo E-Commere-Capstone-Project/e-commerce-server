@@ -22,7 +22,6 @@ router.get("/", verifyToken, async (req, res, next) => {
         message: "Cart has been successfully received.",
       },
       cart,
-      products: cartItems,
       user: req.user,
     });
   } catch (error) {
