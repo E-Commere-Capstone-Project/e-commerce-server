@@ -29,12 +29,13 @@ async function createProduct(body) {
     const {
       rows: [product],
     } = await client.query(
-      `INSERT INTO product ("name", "description", "category_id", "price", "product_image", 'quantity') VALUES($1, $2, $3, $4, $5) RETURNING *;`,
+      `INSERT INTO product ("name", "description", "category_id", "price", "discount_id","product_image", "quantity") VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
       [
         body.name,
         body.description,
         body.category_id,
         body.price,
+        body.discount_id,
         body.product_image,
         body.quantity,
       ]
@@ -70,7 +71,6 @@ async function updateProduct({ id, ...fields }) {
 // DELETE = /api/products/:id delete a product
 async function deleteProduct(id) {
   try {
-    await client.query(`DELETE FROM product_inventory WHERE 'id' = $1;`, [id]);
     const {
       rows: [product],
     } = await client.query(`DELETE FROM product WHERE id = $1 RETURNING *;`, [
