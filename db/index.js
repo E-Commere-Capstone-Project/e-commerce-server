@@ -4,4 +4,5 @@ module.exports = {
   ...require("./products"),
   ...require("./product_categories.js"), // etc
   ...require("./cart"),
+  ...require("./admin_user"),
 };
