@@ -1,7 +1,8 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const { PORT = 8080 } = process.env;
+// const { PORT = 8080 } = process.env;
+const PORT = process.env.PORT || 8080;
 const chalk = require("chalk");
 
 // init morgan
