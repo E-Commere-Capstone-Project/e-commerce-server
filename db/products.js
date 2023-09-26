@@ -13,9 +13,15 @@ async function getAllProducts() {
 // GET = /api/products/:id - get a single product by id
 async function getProductById(id) {
   try {
+    // const {
+    //   rows: [product],
+    // } = await client.query(`SELECT * FROM product WHERE id = $1;`, [id]);
     const {
       rows: [product],
-    } = await client.query(`SELECT * FROM product WHERE id = $1;`, [id]);
+    } = await client.query(
+      `SELECT p.name, p.description, pCat.name AS category, p.price, p.product_image, p.quantity FROM product p INNER JOIN product_category pCat ON p.category_id = pCat.id WHERE p.id = $1;`,
+      [id]
+    );
 
     return product;
   } catch (error) {

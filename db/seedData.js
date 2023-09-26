@@ -45,13 +45,6 @@ async function createTables() {
         );
         `
     );
-    // DISCOUNT TABLE
-    await client.query(`CREATE TABLE discount (
-          id SERIAL PRIMARY KEY,
-          name VARCHAR(255) NOT NULL,
-          description TEXT NOT NULL,
-          discount_percent NUMERIC,
-          isActive BOOLEAN);`);
     // PRODUCT TABLE
     await client.query(`CREATE TABLE product (
             id SERIAL PRIMARY KEY,
@@ -59,7 +52,6 @@ async function createTables() {
             description TEXT NOT NULL,
             category_id SERIAL REFERENCES product_category(id),
             price NUMERIC NOT NULL,
-            discount_id SERIAL REFERENCES discount(id),
             product_image TEXT NOT NULL,
             quantity INTEGER NOT NULL
             );
@@ -141,9 +133,6 @@ async function createInitialData() {
     VALUES (
       1, 'lips'
     ), (2, 'face'), (3, 'eyes'), (4, 'accessories'), (5, 'highlighters')`);
-    await client.query(
-      `INSERT INTO discount (name, description, discount_percent, isActive) VALUES ('REDFORDEAD', 'All red lipsticks are 30 percent off', .30, TRUE), ('PALETTELUV','All Palettes are 20 percent off', .20, TRUE)`
-    );
     await client.query(`
       INSERT INTO product (name, description, category_id, price, product_image, quantity)
       VALUES

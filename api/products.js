@@ -44,7 +44,6 @@ router.post(
       "description",
       "category_id",
       "price",
-      "discount_id",
       "product_image",
       "quantity",
     ],
@@ -79,15 +78,8 @@ router.patch(
     try {
       const admin = await getAdminUserByUsername(req.user.username);
       if (!admin) return;
-      const {
-        name,
-        description,
-        category_id,
-        price,
-        discount_id,
-        product_image,
-        quantity,
-      } = req.body;
+      const { name, description, category_id, price, product_image, quantity } =
+        req.body;
       const { id } = req.params;
       const productToUpdate = await getProductById(id);
       if (!productToUpdate) {
@@ -102,7 +94,6 @@ router.patch(
           description,
           category_id,
           price,
-          discount_id,
           product_image,
           quantity,
         });
