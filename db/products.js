@@ -35,7 +35,7 @@ async function createProduct(body) {
     const {
       rows: [product],
     } = await client.query(
-      `INSERT INTO product ("name", "description", "category_id", "price","product_image", "quantity") VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
+      `INSERT INTO product ("name", "description", "category_id", "price","product_image", "quantity") VALUES($1, $2, $3, $4, $5, $6) RETURNING *;`,
       [
         body.name,
         body.description,
