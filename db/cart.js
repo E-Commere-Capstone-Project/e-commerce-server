@@ -44,13 +44,7 @@ async function addToCart(userId, productId, quantity) {
     const ifInCart = await checkInCart(userId, productId);
 
     if (ifInCart) {
-      const {
-        rows: [order_items],
-      } = await client.query(
-        `UPDATE order_items SET quantity = $1 WHERE user_id = $2 AND product_id = $3;`,
-        [quantity, userId, productId]
-      );
-      return order_items;
+      return;
     } else {
       const {
         rows: [order_items],
@@ -62,6 +56,27 @@ async function addToCart(userId, productId, quantity) {
     }
 
     // return order_items;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// PATCH to change order quantity
+async function updateCart(userId, productId, quantity) {
+  try {
+    const ifInCart = await checkInCart(userId, productId);
+
+    if (ifInCart) {
+      const {
+        rows: [order_items],
+      } = await client.query(
+        `UPDATE order_items SET quantity = $1 WHERE user_id = $2 AND product_id = $3;`,
+        [quantity, userId, productId]
+      );
+      return order_items;
+    } else {
+      return;
+    }
   } catch (error) {
     throw error;
   }
@@ -102,6 +117,7 @@ async function emptyCart(userId) {
 module.exports = {
   getCart,
   addToCart,
+  updateCart,
   removeFromCart,
   emptyCart,
 };

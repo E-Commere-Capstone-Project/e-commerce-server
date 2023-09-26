@@ -1,7 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const { getCart, addToCart, removeFromCart, emptyCart } = require("../db/cart");
+const {
+  getCart,
+  addToCart,
+  updateCart,
+  removeFromCart,
+  emptyCart,
+} = require("../db/cart");
 // const { getProductById } = require("../db/products");
 const { verifyToken } = require("./utils");
 
@@ -42,6 +48,25 @@ router.post("/", verifyToken, async (req, res, next) => {
       status: {
         success: true,
         message: "Item successfully added to your cart!",
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// PATCH = /api/cart update a product in the cart
+router.patch("/", verifyToken, async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    const { productId, quantity } = req.body;
+    const itemUpdated = await updateCart(id, productId, quantity);
+
+    res.send({
+      itemUpdated,
+      status: {
+        success: true,
+        message: "Item successfully updated!",
       },
     });
   } catch (error) {
