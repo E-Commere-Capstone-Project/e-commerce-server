@@ -20,7 +20,11 @@ app.use(bodyParser.json());
 
 // init cors
 const cors = require("cors");
-app.use(cors());
+app.use(
+  cors({
+    origin: "localhost:5173",
+  })
+);
 
 // init db client
 const client = require("./db/client");
