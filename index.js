@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 const cors = require("cors");
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://status-quo-e-commerce.netlify.app",
   })
 );
 app.use((req, res, next) => {
