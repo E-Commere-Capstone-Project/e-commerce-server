@@ -20,11 +20,18 @@ app.use(bodyParser.json());
 
 // init cors
 const cors = require("cors");
+// app.use(
+//   cors({
+//     origin: "https://status-quo-e-commerce.netlify.app",
+//   })
+// );
+
 app.use(
   cors({
-    origin: "https://status-quo-e-commerce.netlify.app",
+    origin: "http://localhost:5173/"
   })
-);
+)
+
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE");
