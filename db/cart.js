@@ -8,7 +8,7 @@ async function getCart(userId) {
     //   [userId]
     // );
     const { rows: order_items } = await client.query(
-      `SELECT name, price, discount_id, product_image, oi.quantity AS order_quantity FROM order_items oi INNER JOIN product p ON oi.product_id = p.id WHERE oi.user_id = $1`,
+      `SELECT name, price, product_image, oi.quantity AS order_quantity FROM order_items oi INNER JOIN product p ON oi.product_id = p.id WHERE oi.user_id = $1`,
       [userId]
     );
 
