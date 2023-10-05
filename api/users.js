@@ -60,6 +60,7 @@ router.post("/login", async (req, res, next) => {
     next({
       name: "MissingCredentialsError",
       message: "Please supply both a username and a password",
+      status: {success: false, message: 'Login has failed, please check username and password before trying again.'}
     });
   }
 
@@ -84,8 +85,7 @@ router.post("/login", async (req, res, next) => {
       });
     }
   } catch (error) {
-    next({error,
-    status: {success: false, message: 'Login has failed, please check username and password before trying again.'}});
+    next(error);
   }
 });
 
