@@ -84,7 +84,8 @@ router.post("/login", async (req, res, next) => {
       });
     }
   } catch (error) {
-    next(error);
+    next({error,
+    status: {success: false, message: 'Login has failed, please check username and password before trying again.'}});
   }
 });
 
